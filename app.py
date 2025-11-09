@@ -1,20 +1,12 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-
-# -----------------------------
-# Page Configuration
-# -----------------------------
 st.set_page_config(
     page_title="Netflix EDA Dashboard",
     page_icon="🍿",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# -----------------------------
-# Load Data
-# -----------------------------
 @st.cache_data
 def load_data():
     df = pd.read_csv("netflix_titles.csv")
@@ -25,9 +17,6 @@ def load_data():
 
 df = load_data()
 
-# -----------------------------
-# Sidebar Filters
-# -----------------------------
 st.sidebar.header("🎛️ Filter Options")
 
 type_list = df['type'].dropna().unique().tolist()
@@ -43,9 +32,6 @@ year_range = st.sidebar.slider("Select Release Year Range",
                                int(df['release_year'].max()),
                                (2000, 2020))
 
-# -----------------------------
-# Apply Filters
-# -----------------------------
 filtered_df = df[
     (df['type'] == selected_type) &
     (df['country'].str.contains(selected_country, na=False)) &
@@ -53,16 +39,13 @@ filtered_df = df[
     (df['release_year'] <= year_range[1])
 ]
 
-# -----------------------------
-# Dashboard Header
-# -----------------------------
-st.title("🍿 Netflix Titles - Exploratory Data Analysis Dashboard")
+st.title(" Netflix Titles - Exploratory Data Analysis Dashboard")
 st.markdown("Analyze Netflix data interactively using filters on the left.")
 
 # -----------------------------
 # Dataset Overview
 # -----------------------------
-st.subheader("🎯 Dataset Overview")
+st.subheader(" Dataset Overview")
 col1, col2, col3 = st.columns(3)
 col1.metric("Total Titles", len(filtered_df))
 col2.metric("Movies", len(filtered_df[filtered_df['type'] == "Movie"]))
@@ -70,11 +53,8 @@ col3.metric("TV Shows", len(filtered_df[filtered_df['type'] == "TV Show"]))
 
 st.dataframe(filtered_df.head(10), use_container_width=True)
 
-# -----------------------------
-# Visuals Section
-# -----------------------------
 st.markdown("---")
-st.subheader("📊 Visual Insights")
+st.subheader(" Visual Insights")
 
 tab1, tab2, tab3 = st.tabs(["By Year", "By Rating", "Top Countries"])
 
@@ -88,7 +68,7 @@ with tab1:
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-# --- Plot 2: Rating Distribution ---
+
 with tab2:
     rating_count = filtered_df['rating'].value_counts()
     fig2 = px.pie(
@@ -98,7 +78,6 @@ with tab2:
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-# --- Plot 3: Top Countries ---
 with tab3:
     top_countries = (
         df['country']
@@ -116,9 +95,6 @@ with tab3:
     )
     st.plotly_chart(fig3, use_container_width=True)
 
-# -----------------------------
-# Footer
-# -----------------------------
 st.markdown("---")
 st.markdown("© 2025 Netflix EDA Dashboard | Built with Streamlit")
 
